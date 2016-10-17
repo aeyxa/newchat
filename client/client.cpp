@@ -1,9 +1,10 @@
-int main(int argc, char *argv[])
+int main()
 {
-  sock = CreateConnection(server);
+  sock = CreateConnection();
 
-  CheckConnection(sock);
   StageConnection(sock);
+  CheckConnection(sock);
+  SpeakConnection(sock);
 
   close(sock);
 }

@@ -18,6 +18,9 @@ int main()
     info[client].push_back(active);
     info[client].push_back(remote);
 
-    AttemptConnection(info,active,remote);
+    AttemptConnection(info,server,active,remote);
+
+    info.erase(socket_one);
+    info.erase(socket_two);
   }
 }
