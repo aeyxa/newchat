@@ -6,8 +6,6 @@ void ConfirmConnection(int socket_one, int socket_two)
   char buffer_one[256]; char buffer_two[256];
   std::string validation; bool one, two;
 
-
-
   write(socket_one,"Connected!",13);
   write(socket_two,"Connected!",13);
 

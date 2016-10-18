@@ -1,6 +1,6 @@
 #include "../common/common.h"
 
-void Reading(int sock)
+void Reading(SSL *ssl)
 {
   char buffer[256];
 
@@ -8,7 +8,7 @@ void Reading(int sock)
   {
     memset(buffer,0,sizeof(buffer));
 
-    if(read(sock,buffer,sizeof(buffer)))
+    if(SSL_read(ssl,buffer,sizeof(buffer)))
     {
       std::cout << buffer << std::endl;
     }
@@ -16,24 +16,26 @@ void Reading(int sock)
   }
 }
 
-void Writing(int sock)
+void Writing(SSL *ssl)
 {
   char buffer[256];
 
   for(;;)
   {
     memset(buffer,0,sizeof(buffer));
+
     std::cout << "You: ";
     std::cin.getline(buffer,sizeof(buffer));
-    write(sock,buffer,sizeof(buffer));
+    SSL_write(ssl,buffer,sizeof(buffer));
   }
 }
 
 void SpeakConnection(int sock)
 {
-  std::thread thread_one(Reading,sock);
-  std::thread thread_two(Writing,sock);
+  SSL *ssl = WrapSocketWithSSL(sock); SSL_connect(ssl);
 
-  thread_one.join();
-  thread_two.join();
+  std::thread thread_one(Writing,ssl);
+  std::thread thread_two(Reading,ssl);
+
+  thread_one.join(); thread_two.join();
 }

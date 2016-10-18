@@ -28,4 +28,8 @@
 
 #define MAP std::map<int,std::vector<std::string>>
 
+void LoadCertificates(SSL_CTX* ctx, char* CertFile, char* KeyFile);
+SSL* WrapSocketWithSSL(int sock);
+SSL_CTX* InitServerCTX(void);
+
 #endif

@@ -1,8 +1,8 @@
 #ifndef CLIENT_COMMUNICATION_H
 #define CLIENT_COMMUNICATION_H
 
-void Reading(int sock);
-void Writing(int sock);
+void Reading(SSL *ssl);
+void Writing(SSL *ssl);
 void SpeakConnection(int sock);
 
 #endif
