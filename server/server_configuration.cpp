@@ -1,6 +1,7 @@
 #include "../common/common.h"
+#include "server_communication.h"
 
-void check(int socket_one, int socket_two)
+void ConfirmConnection(int socket_one, int socket_two)
 {
   char buffer_one[256]; char buffer_two[256];
   std::string validation; bool one, two;
@@ -66,8 +67,8 @@ void AttemptConnection(std::map<int,std::vector<std::string>> info,
     if(pid == 0)
     {
       close(server);
-      check(socket_one,socket_two);
-      speak(socket_one,socket_two);
+      ConfirmConnection(socket_one,socket_two);
+      ConnectionThreads(socket_one,socket_two);
     }
     close(socket_two);
   }

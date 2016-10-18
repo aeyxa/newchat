@@ -55,7 +55,7 @@ int CreateConnection()
   struct hostent *host = gethostbyname("71.6.134.109");
 
   memset(&address,0,sizeof(address));
-  
+
   address.sin_family = AF_INET; address.sin_port = htons(port);
   memcpy((char *)&address.sin_addr.s_addr, (char*)host->h_addr, host->h_length);
 
