@@ -4,6 +4,6 @@
 void StageConnection(int sock);
 void CheckConnection(int sock);
 std::string ReadConnection(int sock);
-int CreateConnection(struct hostent *server);
+int CreateConnection();
 
 #endif
