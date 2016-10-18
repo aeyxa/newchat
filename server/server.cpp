@@ -11,32 +11,12 @@ int main()
   {
     client = CreateAccept(server);
 
-    if(client > 0)
-    {
-      info[client];
+    active = ClientInformation(client);
+    remote = ClientInformation(client);
 
-      active = ClientInformation(client);
-      remote = ClientInformation(client);
+    info = PlaceMemory(info,client,active,remote);
+    sock = CheckMemory(info,client,active,remote);
 
-      info[client].push_back(active);
-      info[client].push_back(remote);
-    }
-
-    sock = CheckMemory(info,active,remote);
-
-    if(sock > 0)
-    {
-      int pid = fork();
-
-      if(pid == 0)
-      {
-        close(server);
-        ConfirmConnection(client,sock);
-        ConnectionThreads(client,sock);
-      }
-      close(client);
-    }
-
-    info.erase(client); info.erase(sock);
+    info = ConnectionLogic(info,sock,client,server);
   }
 }

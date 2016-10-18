@@ -6,6 +6,8 @@ void ConfirmConnection(int socket_one, int socket_two)
   char buffer_one[256]; char buffer_two[256];
   std::string validation; bool one, two;
 
+
+
   write(socket_one,"Connected!",13);
   write(socket_two,"Connected!",13);
 
@@ -41,27 +43,30 @@ void ConfirmConnection(int socket_one, int socket_two)
   }
 }
 
-int CheckMemory(std::map<int,std::vector<std::string>> info,
-                      std::string active, std::string remote)
+MAP CleanMemory(MAP info, int client, int sock)
 {
-  int socket_one, socket_two;
+  info.erase(client); info.erase(sock);
 
-  for(auto x = info.begin(); x != info.end(); ++x)
+  return info;
+}
+
+MAP ConnectionLogic(MAP info, int sock, int client, int server)
+{
+  if(sock != -1)
   {
-    if(x->second[0] == remote && x->second[1] == active)
+    int pid = fork();
+
+    if(pid == 0)
     {
-      socket_one = x->first;
+      close(server);
+      ConfirmConnection(client,sock);
+      ConnectionThreads(client,sock);
     }
-    if(x->second[0] == active && x->second[1] == remote)
-    {
-      socket_two = x->first;
-    }
+    close(client);
+
+    return CleanMemory(info,client,sock);
   }
-  if(socket_one && socket_two)
-  {
-    return socket_one;
-  }
-  else return -1;
+  return info;
 }
 
 std::string ClientInformation(int client)
@@ -76,6 +81,40 @@ std::string ClientInformation(int client)
   return name;
 }
 
+MAP PlaceMemory(MAP info, int client, std::string active, std::string remote)
+{
+  if(client != -1)
+  {
+    info[client];
+
+    info[client].push_back(active);
+    info[client].push_back(remote);
+
+    return info;
+  }
+}
+
+int CheckMemory(MAP info, int client, std::string active, std::string remote)
+{
+  int socket_one, socket_two;
+
+  socket_one = socket_two = 0;
+
+  for(auto x = info.begin(); x != info.end(); ++x)
+  {
+    if(x->second[0] == remote && x->second[1] == active)
+    {
+      socket_one = client;
+      socket_two = x->first;
+    }
+  }
+  if(socket_one && socket_two)
+  {
+    return socket_two;
+  }
+  else return -1;
+}
+
 int CreateAccept(int server)
 {
   int client; struct sockaddr_in address;
@@ -83,7 +122,7 @@ int CreateAccept(int server)
 
   client = accept(server,(struct sockaddr*)&address,&length);
 
-  if(client)
+  if(client >= 0)
   {
     return client;
   }
@@ -92,18 +131,26 @@ int CreateAccept(int server)
 
 int CreateListener()
 {
-  int sock, port = 9999; struct sockaddr_in address;
+  int sock, bound, port = 9999, use = 1; struct sockaddr_in address;
 
   sock = socket(AF_INET,SOCK_STREAM,0);
-  memset(&address,0,sizeof(address));
 
-  address.sin_family = AF_INET;
-  address.sin_port = htons(port);
-  address.sin_addr.s_addr = INADDR_ANY;
+  if(sock >= 0)
+  {
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &use, sizeof(int));
 
-  if(bind(sock,(struct sockaddr*)&address,sizeof(address)))
+    memset(&address,0,sizeof(address));
+
+    address.sin_family = AF_INET;
+    address.sin_port = htons(port);
+    address.sin_addr.s_addr = INADDR_ANY;
+
+    bound = bind(sock,(struct sockaddr*)&address,sizeof(address));
+  }
+  if(bound >= 0)
   {
     listen(sock,10); return sock;
   }
-  else std::cout << "Failed to bind" << std::endl; exit(1);
+
+  std::cout << "Failed to bind" << std::endl; exit(1);
 }

@@ -2,7 +2,7 @@
 
 void StageConnection(int sock)
 {
-  char buffer[256];
+  char buffer[256]; std::string check;
 
   memset(buffer,0,sizeof(buffer));
 
@@ -34,21 +34,23 @@ void CheckConnection(int sock)
 {
   std::string validation;
 
-  validation = ReadConnection(sock);
-
-  if(validation == "Connected!")
+  for(;;)
   {
-    write(sock,"Online",6);
-  }
-  else exit(1);
+    validation = ReadConnection(sock);
 
-  validation = ReadConnection(sock);
+    if(validation == "Connected!")
+    {
+      std::cout << "Connected!" << std::endl;
+      write(sock,"Online",6);
+    }
 
-  if(validation == "Confirmed!")
-  {
-    return;
+    validation = ReadConnection(sock);
+
+    if(validation == "Confirmed!")
+    {
+      return;
+    }
   }
-  else exit(1);
 }
 
 int CreateConnection()

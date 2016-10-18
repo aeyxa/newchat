@@ -26,4 +26,6 @@
 #include <thread>
 #include <ncurses.h>
 
+#define MAP std::map<int,std::vector<std::string>>
+
 #endif
