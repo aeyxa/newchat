@@ -1,4 +1,6 @@
-UtilizeConnection(int one, int two)
+#include "../common/common.h"
+
+void UtilizeConnection(int one, int two)
 {
   char buffer[256];
 
@@ -9,7 +11,7 @@ UtilizeConnection(int one, int two)
   }
 }
 
-ConnectionThreads(int socket_one, int socket_two)
+void ConnectionThreads(int socket_one, int socket_two)
 {
   std::thread thread_one(UtilizeConnection,socket_one,socket_two);
   std::thread thread_two(UtilizeConnection,socket_two,socket_one);

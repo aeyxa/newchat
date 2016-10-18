@@ -17,7 +17,6 @@ void ConfirmConnection(int socket_one, int socket_two)
     {
       one = true;
     }
-    memset(validation,0,sizeof(validation));
   }
   if(read(socket_two,buffer_two,sizeof(buffer_two)))
   {
@@ -27,7 +26,6 @@ void ConfirmConnection(int socket_one, int socket_two)
     {
       two = true;
     }
-    memset(validation,0,sizeof(validation));
   }
   if(one && two)
   {
@@ -43,8 +41,8 @@ void ConfirmConnection(int socket_one, int socket_two)
   }
 }
 
-void AttemptConnection(std::map<int,std::vector<std::string>> info,
-                        int server, std::string active, std::string remote)
+int CheckMemory(std::map<int,std::vector<std::string>> info,
+                      std::string active, std::string remote)
 {
   int socket_one, socket_two;
 
@@ -59,19 +57,11 @@ void AttemptConnection(std::map<int,std::vector<std::string>> info,
       socket_two = x->first;
     }
   }
-
   if(socket_one && socket_two)
   {
-    int pid = fork(); check(errno);
-
-    if(pid == 0)
-    {
-      close(server);
-      ConfirmConnection(socket_one,socket_two);
-      ConnectionThreads(socket_one,socket_two);
-    }
-    close(socket_two);
+    return socket_one;
   }
+  else return -1;
 }
 
 std::string ClientInformation(int client)
@@ -93,7 +83,11 @@ int CreateAccept(int server)
 
   client = accept(server,(struct sockaddr*)&address,&length);
 
-  return client;
+  if(client)
+  {
+    return client;
+  }
+  else return -1;
 }
 
 int CreateListener()
@@ -101,15 +95,15 @@ int CreateListener()
   int sock, port = 9999; struct sockaddr_in address;
 
   sock = socket(AF_INET,SOCK_STREAM,0);
-  memset(&address,sizeof(address));
+  memset(&address,0,sizeof(address));
 
   address.sin_family = AF_INET;
   address.sin_port = htons(port);
   address.sin_addr.s_addr = INADDR_ANY;
 
-  bind(sock,(struct sockaddr*)&address,sizeof(address));
-
-  check(errno); listen(sock,10);
-
-  return sock;
+  if(bind(sock,(struct sockaddr*)&address,sizeof(address)))
+  {
+    listen(sock,10); return sock;
+  }
+  else std::cout << "Failed to bind" << std::endl; exit(1);
 }

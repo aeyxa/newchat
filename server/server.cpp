@@ -1,6 +1,7 @@
 #include "../common/common.h"
 #include "server.h"
 #include "server_configuration.h"
+#include "server_communication.h"
 
 int main()
 {
@@ -10,17 +11,32 @@ int main()
   {
     client = CreateAccept(server);
 
-    info[client];
+    if(client > 0)
+    {
+      info[client];
 
-    active = ClientInformation(client);
-    remote = ClientInformation(client);
+      active = ClientInformation(client);
+      remote = ClientInformation(client);
 
-    info[client].push_back(active);
-    info[client].push_back(remote);
+      info[client].push_back(active);
+      info[client].push_back(remote);
+    }
 
-    AttemptConnection(info,server,active,remote);
+    sock = CheckMemory(info,active,remote);
 
-    info.erase(socket_one);
-    info.erase(socket_two);
+    if(sock > 0)
+    {
+      int pid = fork();
+
+      if(pid == 0)
+      {
+        close(server);
+        ConfirmConnection(client,sock);
+        ConnectionThreads(client,sock);
+      }
+      close(client);
+    }
+
+    info.erase(client); info.erase(sock);
   }
 }
