@@ -1,4 +1,6 @@
-Reading(int sock)
+#include "../common/common.h"
+
+void Reading(int sock)
 {
   char buffer[256];
 
@@ -14,7 +16,7 @@ Reading(int sock)
   }
 }
 
-Writing(int sock)
+void Writing(int sock)
 {
   char buffer[256];
 
@@ -27,7 +29,7 @@ Writing(int sock)
   }
 }
 
-SpeakConnection(int sock)
+void SpeakConnection(int sock)
 {
   std::thread thread_one(Reading,sock);
   std::thread thread_two(Writing,sock);

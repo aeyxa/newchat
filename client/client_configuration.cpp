@@ -1,3 +1,5 @@
+#include "../common/common.h"
+
 void StageConnection(int sock)
 {
   char buffer[256];
@@ -15,27 +17,6 @@ void StageConnection(int sock)
   write(sock,buffer,sizeof(buffer));
 }
 
-void CheckConnection(int sock)
-{
-  std::string validation;
-
-  validation = ReadConnection(sock);
-
-  if(validation == "Connected!")
-  {
-    write(sock,"Online",6); check(errno);
-  }
-  else exit(1);
-
-  validation = ReadConnection(sock);
-
-  if(validation == "Confirmed!")
-  {
-    continue;
-  }
-  else exit(1);
-}
-
 std::string ReadConnection(int sock)
 {
   char buffer[256]; std::string validation;
@@ -49,9 +30,30 @@ std::string ReadConnection(int sock)
   return validation;
 }
 
+void CheckConnection(int sock)
+{
+  std::string validation;
+
+  validation = ReadConnection(sock);
+
+  if(validation == "Connected!")
+  {
+    write(sock,"Online",6);
+  }
+  else exit(1);
+
+  validation = ReadConnection(sock);
+
+  if(validation == "Confirmed!")
+  {
+    return;
+  }
+  else exit(1);
+}
+
 int CreateConnection()
 {
-  int sock, port = 9999; struct sockaddr_in addr;
+  int sock, port = 9999; struct sockaddr_in address;
   struct hostent *host = gethostbyname("71.6.134.109");
 
   memset(&address,0,sizeof(address));
@@ -60,10 +62,14 @@ int CreateConnection()
   memcpy((char *)&address.sin_addr.s_addr, (char*)host->h_addr, host->h_length);
 
   sock = socket(AF_INET,SOCK_STREAM,0);
-  check(errno);
 
-  connect(sock,(struct sockaddr*)&address,sizeof(address));
-  check(errno);
+  if(sock)
+  {
+    connect(sock,(struct sockaddr*)&address,sizeof(address));
 
-  return sock;
+    return sock;
+  }
+  else std::cout << "Connection failed" << std::endl; exit(1);
+
+
 }
