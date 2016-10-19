@@ -3,16 +3,17 @@
 SSL* WrapSocketWithSSL(int sock, std::string type)
 {
   SSL *ssl; SSL_CTX *ctx;
+  char File[] = "aeyxa.pem";
 
   /*
-  openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout aeyxa.pem -out aeyxa.pem
+  openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout aeyxa.pem -out aeyxa.pem
 
   This is the command to generate the pem files.
   */
 
   SSL_library_init();
   ctx = InitCTX(type);
-  LoadCertificates(ctx,"aeyxa.pem","aeyxa.pem");
+  LoadCertificates(ctx,(char *)File,(char *)File);
   ssl = SSL_new(ctx);
   SSL_set_fd(ssl,sock);
 
