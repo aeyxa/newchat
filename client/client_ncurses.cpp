@@ -4,7 +4,10 @@ WINDOW *draw_top_window()
 {
   int maxx, maxy, topy, topx;
 
-  initscr(); refresh();
+  initscr(); refresh(); start_color();
+
+  init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
+  init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
   getmaxyx(stdscr,maxy,maxx);
 
@@ -81,15 +84,10 @@ void bot_window_configure(WINDOW *display_bot_window)
 
 void redraw_window(WINDOW *display_top_window, char* buffer)
 {
-  start_color();
+
   char output[300];
-  time_t now = time(0);
+
   std::string comparison = buffer;
-
-  //strcat(output,asctime(localtime(&now)));
-
-  init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
-  init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
   if(comparison.at(0) == '1')
   {
