@@ -20,10 +20,8 @@ void ConnectionThreads(int socket_one, int socket_two)
 {
   SSL *ssl_one, *ssl_two;
 
-  ssl_one = WrapSocketWithSSL(socket_one);
-  ssl_two = WrapSocketWithSSL(socket_two);
-
-  SSL_accept(ssl_one); SSL_accept(ssl_two);
+  ssl_one = WrapServerWithSSL(socket_one);
+  ssl_two = WrapServerWithSSL(socket_two);
 
   std::thread thread_one(UtilizeConnection,ssl_one,ssl_two);
   std::thread thread_two(UtilizeConnection,ssl_two,ssl_one);

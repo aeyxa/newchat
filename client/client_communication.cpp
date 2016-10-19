@@ -32,7 +32,7 @@ void Writing(SSL *ssl)
 
 void SpeakConnection(int sock)
 {
-  SSL *ssl = WrapSocketWithSSL(sock); SSL_connect(ssl);
+  SSL *ssl = WrapClientWithSSL(sock);
 
   std::thread thread_one(Writing,ssl);
   std::thread thread_two(Reading,ssl);
