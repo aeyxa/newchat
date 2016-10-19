@@ -84,28 +84,23 @@ void bot_window_configure(WINDOW *display_bot_window)
 
 void redraw_window(WINDOW *display_top_window, char* buffer)
 {
+  std::string msg = buffer;
 
-  char output[300];
-
-  std::string comparison = buffer;
-
-  if(comparison.at(0) == '1')
+  if(msg.at(0) == '1')
   {
     wattron(display_top_window,COLOR_PAIR(1));
 
-    comparison.replace(0,1,"< ");
-    strcpy(output,comparison.c_str());
+    msg.replace(0,1,"< ");
 
-    wprintw(display_top_window,"%s\n",output);
+    wprintw(display_top_window,"%s\n",msg.c_str());
   }
-  if(comparison.at(0) == '2')
+  if(msg.at(0) == '2')
   {
     wattron(display_top_window,COLOR_PAIR(2));
 
-    comparison.replace(0,1,"> ");
-    strcpy(output,comparison.c_str());
+    msg.replace(0,1,"> ");
 
-    wprintw(display_top_window,"%s\n",output);
+    wprintw(display_top_window,"%s\n",msg.c_str());
   }
 
   wrefresh(display_top_window);
