@@ -29,8 +29,7 @@
 #define MAP std::map<int,std::vector<std::string>>
 
 void LoadCertificates(SSL_CTX* ctx, char* CertFile, char* KeyFile);
-SSL* WrapClientWithSSL(int sock);
-SSL* WrapServerWithSSL(int sock);
-SSL_CTX* InitServerCTX(void);
+SSL* WrapSocketWithSSL(int sock,std::string type);
+SSL_CTX* InitCTX(std::string);
 
 #endif

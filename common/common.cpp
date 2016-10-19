@@ -1,6 +1,6 @@
 #include "common.h"
 
-SSL* WrapClientWithSSL(int sock)
+SSL* WrapSocketWithSSL(int sock, std::string type)
 {
   SSL *ssl; SSL_CTX *ctx;
 
@@ -11,58 +11,37 @@ SSL* WrapClientWithSSL(int sock)
   */
 
   SSL_library_init();
-  ctx = InitClientCTX();
+  ctx = InitCTX(type);
   LoadCertificates(ctx,"aeyxa.pem","aeyxa.pem");
   ssl = SSL_new(ctx);
   SSL_set_fd(ssl,sock);
-  SSL_connect(ssl);
 
-  return ssl;
-}
-
-SSL* WrapServerWithSSL(int sock)
-{
-  SSL *ssl; SSL_CTX *ctx;
-
-  /*
-  openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout aeyxa.pem -out aeyxa.pem
-
-  This is the command to generate the pem files.
-  */
-
-  SSL_library_init();
-  ctx = InitServerCTX();
-  LoadCertificates(ctx,"aeyxa.pem","aeyxa.pem");
-  ssl = SSL_new(ctx);
-  SSL_set_fd(ssl,sock);
-  SSL_accept(ssl);
-  
-  return ssl;
-}
-
-SSL_CTX* InitClientCTX(void)
-{
-  const SSL_METHOD *method; SSL_CTX *ctx;
-
-  OpenSSL_add_all_algorithms();
-  SSL_load_error_strings();
-  method = TLSv1_2_client_method();
-  ctx = SSL_CTX_new(method);
-
-  if(ctx == NULL)
+  if(type == "server")
   {
-    ERR_print_errors_fp(stderr); abort();
+    SSL_accept(ssl);
   }
-  return ctx;
+  if(type == "client")
+  {
+    SSL_connect(ssl);
+  }
+
+  return ssl;
 }
 
-SSL_CTX* InitServerCTX(void)
+SSL_CTX* InitCTX(std::string type)
 {
   const SSL_METHOD *method; SSL_CTX *ctx;
 
   OpenSSL_add_all_algorithms();
   SSL_load_error_strings();
-  method = TLSv1_2_server_method();
+  if(type == "client")
+  {
+    method = TLSv1_2_client_method();
+  }
+  if(type == "server")
+  {
+    method = TLSv1_2_server_method();
+  }
   ctx = SSL_CTX_new(method);
 
   if(ctx == NULL)
