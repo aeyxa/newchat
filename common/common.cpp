@@ -3,7 +3,7 @@
 SSL* WrapSocketWithSSL(int sock, std::string type)
 {
   SSL *ssl; SSL_CTX *ctx;
-  char File[] = "aeyxa.pem";
+  char file[] = "aeyxa.pem";
 
   /*
   openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout aeyxa.pem -out aeyxa.pem
@@ -13,7 +13,7 @@ SSL* WrapSocketWithSSL(int sock, std::string type)
 
   SSL_library_init();
   ctx = InitCTX(type);
-  LoadCertificates(ctx,(char *)File,(char *)File);
+  LoadCertificates(ctx,(char *)file,(char *)file);
   ssl = SSL_new(ctx);
   SSL_set_fd(ssl,sock);
 
