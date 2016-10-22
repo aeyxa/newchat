@@ -3,7 +3,7 @@
 A linux command line chat software, that uses openssl to encrypt the communcation sockets for secure messaging.
 
 
-## No make file or installer has been created yet, however the program is currenty functional.
+## No make file or installer has been created yet, however the program is currently functional.
 
 If you wish to test the program out, you will need to download the entire project. You will need to change the port number, to an available open on your firewall with in the client_configuration.cpp file, on the CreateConnection() function and the "gethostbyname("71.6.134.109");" to the IP address you will be executing the server from. You will need to also change the port number on the server_configuration.cpp file on the CreateListener() function to an available port on your firewall.
 
