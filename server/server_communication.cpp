@@ -4,14 +4,14 @@ void UtilizeConnection(SSL *one, SSL *two)
 {
   char buffer[256];
 
-  for(;;)
+  while(strcmp(buffer,"quit") != 0)
   {
+    char append_one[300]; char append_two[300];
+
     memset(buffer,0,sizeof(buffer));
 
     if(SSL_read(one,buffer,sizeof(buffer)))
     {
-      char append_one[300]; char append_two[300];
-
       strcpy(append_one,"1"); strcat(append_one,buffer);
       strcpy(append_two,"2"); strcat(append_two,buffer);
 
@@ -20,6 +20,7 @@ void UtilizeConnection(SSL *one, SSL *two)
     }
     else break;
   }
+  SSL_write(one,"2quit",5); SSL_write(two,"2quit",5);
 }
 
 void ConnectionThreads(int socket_one, int socket_two)

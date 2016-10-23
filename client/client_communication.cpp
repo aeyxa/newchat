@@ -12,16 +12,13 @@ void Reading(SSL *ssl)
   top_border_configure(display_top_border);
   top_window_configure(display_top_window);
 
-  for(;;)
+  while(strcmp(buffer,"2quit") != 0)
   {
-    if(SSL_read(ssl,buffer,sizeof(buffer)))
-    {
-      redraw_window(display_top_window,buffer);
-      memset(buffer,0,sizeof(buffer));
-    }
+    memset(buffer,0,sizeof(buffer));
+    SSL_read(ssl,buffer,sizeof(buffer));
+    redraw_window(display_top_window,buffer);
   }
-  std::cout << "Connection was terminated!" << std::endl;
-  endwin();
+  endwin(); std::cout << "Connection was terminated!" << std::endl; exit(1);
 }
 
 void Writing(SSL *ssl)
@@ -37,13 +34,12 @@ void Writing(SSL *ssl)
 
   for(;;)
   {
+    memset(buffer,0,sizeof(buffer));
     redraw_writer(display_bot_window,buffer);
     wgetnstr(display_bot_window,buffer,255);
     SSL_write(ssl,buffer,sizeof(buffer));
-    memset(buffer,0,sizeof(buffer));
     wclear(display_bot_window);
   }
-  std::cout << "Connection was terminated!" << std::endl;
   endwin();
 }
 
