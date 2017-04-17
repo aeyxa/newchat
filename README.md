@@ -2,6 +2,7 @@
 
 A linux command line chat software, that uses openssl to encrypt the communcation sockets for secure messaging.
 
+### Though functional, this project has been deprecated in favor of other projects.
 
 ## No make file or installer has been created yet, however the program is currently functional.
 
